@@ -23,6 +23,10 @@ jobs:
         id: test-action
         uses: ./
 
+      - name: Log the outputs
+        run: |
+          echo ${{ toJSON(toJSON(steps.test-action.outputs)) }}
+
       - name: PR should have been found
         if: ${{ steps.test-action.outputs.number == '' }}
         run: exit 1
