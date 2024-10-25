@@ -1,89 +1,48 @@
-/**
- * Unit tests for the action's main functionality, src/main.ts
- *
- * These should be run as if the action was called from a workflow.
- * Specifically, the inputs listed in `action.yml` should be set as environment
- * variables following the pattern `INPUT_<INPUT_NAME>`.
- */
-
+import * as pr from '../src/pr'
 import * as core from '@actions/core'
-import * as main from '../src/main'
+import { PullRequest } from '../src/types'
+import { run } from '../src/main'
 
-// Mock the action's main function
-const runMock = jest.spyOn(main, 'run')
+const ExamplePr: PullRequest = {
+  merge_commit_sha: 'abc123',
+  number: 42,
+  id: 5,
+  title: 'foo',
+  user: { login: 'octocat' },
+  body: 'hello world',
+  labels: [{ name: 'bug' }, { name: 'enhancement' }],
+  merged_by: { login: 'github' },
+  milestone: { title: 'v1.0' }
+}
 
-// Other utilities
-const timeRegex = /^\d{2}:\d{2}:\d{2}/
-
-// Mock the GitHub Actions core library
-let debugMock: jest.SpiedFunction<typeof core.debug>
-let errorMock: jest.SpiedFunction<typeof core.error>
-let getInputMock: jest.SpiedFunction<typeof core.getInput>
-let setFailedMock: jest.SpiedFunction<typeof core.setFailed>
-let setOutputMock: jest.SpiedFunction<typeof core.setOutput>
-
-describe('action', () => {
-  beforeEach(() => {
-    jest.clearAllMocks()
-
-    debugMock = jest.spyOn(core, 'debug').mockImplementation()
-    errorMock = jest.spyOn(core, 'error').mockImplementation()
-    getInputMock = jest.spyOn(core, 'getInput').mockImplementation()
-    setFailedMock = jest.spyOn(core, 'setFailed').mockImplementation()
-    setOutputMock = jest.spyOn(core, 'setOutput').mockImplementation()
+describe('run', () => {
+  it('should set outputs when a PR is found', async () => {
+    jest.spyOn(pr, 'findMergedPullRequest').mockResolvedValue(ExamplePr)
+    const setOutputSpy = jest.spyOn(core, 'setOutput')
+    await run()
+    expect(setOutputSpy).toHaveBeenCalledWith('title', 'foo')
+    expect(setOutputSpy).toHaveBeenCalledWith('number', '42')
+    expect(setOutputSpy).toHaveBeenCalledWith('body', 'hello world')
+    expect(setOutputSpy).toHaveBeenCalledWith('user', 'octocat')
+    expect(setOutputSpy).toHaveBeenCalledWith('assignees', '')
+    expect(setOutputSpy).toHaveBeenCalledWith('labels', 'bug,enhancement')
+    expect(setOutputSpy).toHaveBeenCalledWith('milestone', 'v1.0')
+    expect(setOutputSpy).toHaveBeenCalledWith('merged_by', 'github')
   })
 
-  it('sets the time output', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'milliseconds':
-          return '500'
-        default:
-          return ''
-      }
-    })
-
-    await main.run()
-    expect(runMock).toHaveReturned()
-
-    // Verify that all of the core library functions were called correctly
-    expect(debugMock).toHaveBeenNthCalledWith(1, 'Waiting 500 milliseconds ...')
-    expect(debugMock).toHaveBeenNthCalledWith(
-      2,
-      expect.stringMatching(timeRegex)
-    )
-    expect(debugMock).toHaveBeenNthCalledWith(
-      3,
-      expect.stringMatching(timeRegex)
-    )
-    expect(setOutputMock).toHaveBeenNthCalledWith(
-      1,
-      'time',
-      expect.stringMatching(timeRegex)
-    )
-    expect(errorMock).not.toHaveBeenCalled()
+  it('should set outputs when no PR is found', async () => {
+    jest.spyOn(pr, 'findMergedPullRequest').mockResolvedValue(null)
+    const setOutputSpy = jest.spyOn(core, 'setOutput')
+    await run()
+    expect(setOutputSpy).not.toHaveBeenCalled()
   })
 
-  it('sets a failed status', async () => {
-    // Set the action's inputs as return values from core.getInput()
-    getInputMock.mockImplementation(name => {
-      switch (name) {
-        case 'milliseconds':
-          return 'this is not a number'
-        default:
-          return ''
-      }
-    })
-
-    await main.run()
-    expect(runMock).toHaveReturned()
-
-    // Verify that all of the core library functions were called correctly
-    expect(setFailedMock).toHaveBeenNthCalledWith(
-      1,
-      'milliseconds not a number'
-    )
-    expect(errorMock).not.toHaveBeenCalled()
+  it('should set the workflow as failed if an error occurs', async () => {
+    jest
+      .spyOn(pr, 'findMergedPullRequest')
+      .mockRejectedValue(new Error('test error'))
+    const setFailedSpy = jest.spyOn(core, 'setFailed')
+    await run()
+    expect(setFailedSpy).toHaveBeenCalledWith('test error')
   })
 })
