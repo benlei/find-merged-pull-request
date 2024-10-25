@@ -31556,7 +31556,7 @@ function wrappy (fn, cb) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.closedPRsIterator = void 0;
+exports.getPullRequest = exports.closedPRsIterator = void 0;
 /* istanbul ignore file */
 const github_1 = __nccwpck_require__(3228);
 const utils_1 = __nccwpck_require__(8006);
@@ -31580,6 +31580,11 @@ const closedPRsIterator = () => octokit().paginate.iterator('GET /repos/{owner}/
     per_page: 100
 });
 exports.closedPRsIterator = closedPRsIterator;
+const getPullRequest = async (number) => octokit().rest.pulls.get({
+    ...github_1.context.repo,
+    pull_number: number
+});
+exports.getPullRequest = getPullRequest;
 
 
 /***/ }),
@@ -31721,7 +31726,7 @@ async function run() {
         core.setOutput('body', pr.body || '');
         core.setOutput('user', pr.user?.login || '');
         core.setOutput('assignees', pr.assignees?.map(assignee => assignee.login).join(',') || '');
-        core.setOutput('assignees-json', JSON.stringify(pr.assignees || []));
+        core.setOutput('assignees-json', JSON.stringify(pr.assignees?.map(assignee => assignee.login) || []));
         core.setOutput('labels', pr.labels.map(label => label.name).join(','));
         core.setOutput('labels-json', JSON.stringify(pr.labels.map(label => label.name)));
         core.setOutput('milestone', pr.milestone?.title || '');
@@ -31779,7 +31784,8 @@ const findMergedPullRequest = async () => {
         const foundPr = response.data.find(pr => pr.merge_commit_sha === (0, inputs_1.sha)());
         if (foundPr) {
             core.info(`Found PR #${foundPr.number} with matching SHA ${(0, inputs_1.sha)()} on page ${page}`);
-            return foundPr;
+            // Fetch the full PR details
+            return (await (0, github_1.getPullRequest)(foundPr.number)).data;
         }
         if (page >= (0, inputs_1.pageLimit)()) {
             core.info(`Reached page limit of ${(0, inputs_1.pageLimit)()}`);
