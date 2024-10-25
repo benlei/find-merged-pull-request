@@ -1,5 +1,5 @@
 import * as core from '@actions/core'
-import { closedPRsIterator } from './github'
+import { closedPRsIterator, getPullRequest } from './github'
 import { pageLimit, sha } from './inputs'
 import { PullRequest } from './types'
 
@@ -13,7 +13,9 @@ export const findMergedPullRequest = async (): Promise<PullRequest | null> => {
       core.info(
         `Found PR #${foundPr.number} with matching SHA ${sha()} on page ${page}`
       )
-      return foundPr
+
+      // Fetch the full PR details
+      return (await getPullRequest(foundPr.number)).data
     }
 
     if (page >= pageLimit()) {

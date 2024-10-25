@@ -6,7 +6,7 @@ import {
 } from '@actions/github/lib/utils'
 import { retry } from '@octokit/plugin-retry'
 import { githubToken } from './inputs'
-import { PullRequestsResponse } from './types'
+import { PullRequestResponse, PullRequestsResponse } from './types'
 
 const RetryAttempts = 3
 const ExemptStatusCodes = [400, 401, 403, 404, 422]
@@ -34,3 +34,11 @@ export const closedPRsIterator =
       state: 'closed',
       per_page: 100
     })
+
+export const getPullRequest = async (
+  number: number
+): Promise<PullRequestResponse> =>
+  octokit().rest.pulls.get({
+    ...context.repo,
+    pull_number: number
+  })

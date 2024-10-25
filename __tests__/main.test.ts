@@ -10,6 +10,14 @@ const ExamplePr: PullRequest = {
   title: 'foo',
   user: { login: 'octocat' },
   body: 'hello world',
+  assignees: [
+    {
+      login: 'octocat'
+    },
+    {
+      login: 'hubot'
+    }
+  ],
   labels: [{ name: 'bug' }, { name: 'enhancement' }],
   merged_by: { login: 'github' },
   milestone: { title: 'v1.0' }
@@ -26,7 +34,11 @@ describe('run', () => {
     expect(setOutputSpy).toHaveBeenCalledWith('number', '42')
     expect(setOutputSpy).toHaveBeenCalledWith('body', 'hello world')
     expect(setOutputSpy).toHaveBeenCalledWith('user', 'octocat')
-    expect(setOutputSpy).toHaveBeenCalledWith('assignees', '')
+    expect(setOutputSpy).toHaveBeenCalledWith('assignees', 'octocat,hubot')
+    expect(setOutputSpy).toHaveBeenCalledWith(
+      'assignees-json',
+      '["octocat","hubot"]'
+    )
     expect(setOutputSpy).toHaveBeenCalledWith('labels', 'bug,enhancement')
     expect(setOutputSpy).toHaveBeenCalledWith(
       'labels-json',

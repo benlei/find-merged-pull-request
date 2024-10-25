@@ -10,7 +10,7 @@ export interface PullRequest {
   body: string | null
   merge_commit_sha: string | null
   assignees?: User[] | null
-  merged_by?: User
+  merged_by?: User | null // only present from PullRequestResponse
   labels: Label[]
   milestone: Milestone | null
 }
@@ -25,4 +25,8 @@ export interface Label {
 
 export interface Milestone {
   title: string
+}
+
+export interface PullRequestResponse {
+  data: PullRequest
 }

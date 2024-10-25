@@ -1,7 +1,30 @@
 import * as inputs from '../src/inputs'
 import { findMergedPullRequest } from '../src/pr'
-import { PullRequestsResponse } from '../src/types'
+import { PullRequest, PullRequestsResponse } from '../src/types'
 import * as github from '../src/github'
+
+const FoundPr: PullRequest = {
+  merge_commit_sha: 'abc123',
+  number: 42,
+  id: 5,
+  title: 'foo',
+  user: { login: 'octocat' },
+  body: 'hello world',
+  labels: [{ name: 'bug' }, { name: 'enhancement' }],
+  merged_by: { login: 'github' },
+  milestone: { title: 'v1.0' }
+}
+
+const SecondPagePr: PullRequest = {
+  merge_commit_sha: 'jkl012',
+  id: 0,
+  number: 0,
+  title: '',
+  user: null,
+  body: null,
+  labels: [],
+  milestone: null
+}
 
 // eslint-disable-next-line @typescript-eslint/require-await
 async function* asyncIterator(): AsyncIterableIterator<PullRequestsResponse> {
@@ -27,33 +50,12 @@ async function* asyncIterator(): AsyncIterableIterator<PullRequestsResponse> {
         labels: [],
         milestone: null
       },
-      {
-        merge_commit_sha: 'abc123',
-        number: 42,
-        id: 5,
-        title: 'foo',
-        user: { login: 'octocat' },
-        body: 'hello world',
-        labels: [{ name: 'bug' }, { name: 'enhancement' }],
-        merged_by: { login: 'github' },
-        milestone: { title: 'v1.0' }
-      }
+      { ...FoundPr, merged_by: null }
     ]
   }
 
   yield {
-    data: [
-      {
-        merge_commit_sha: 'jkl012',
-        id: 0,
-        number: 0,
-        title: '',
-        user: null,
-        body: null,
-        labels: [],
-        milestone: null
-      }
-    ]
+    data: [SecondPagePr]
   }
 }
 
@@ -65,18 +67,9 @@ describe('findMergedPullRequest', () => {
 
   it('finds a merged pull request', async () => {
     jest.spyOn(github, 'closedPRsIterator').mockReturnValue(asyncIterator())
+    jest.spyOn(github, 'getPullRequest').mockResolvedValue({ data: FoundPr })
 
-    expect(await findMergedPullRequest()).toEqual({
-      merge_commit_sha: 'abc123',
-      number: 42,
-      id: 5,
-      title: 'foo',
-      user: { login: 'octocat' },
-      body: 'hello world',
-      labels: [{ name: 'bug' }, { name: 'enhancement' }],
-      merged_by: { login: 'github' },
-      milestone: { title: 'v1.0' }
-    })
+    expect(await findMergedPullRequest()).toEqual(FoundPr)
   })
 
   it('does not find a merged pull request', async () => {
@@ -91,6 +84,9 @@ describe('findMergedPullRequest', () => {
     jest.spyOn(github, 'closedPRsIterator').mockReturnValue(asyncIterator())
     jest.spyOn(inputs, 'pageLimit').mockReturnValue(100)
     jest.spyOn(inputs, 'sha').mockReturnValue('jkl012')
+    jest
+      .spyOn(github, 'getPullRequest')
+      .mockResolvedValue({ data: SecondPagePr })
 
     expect(await findMergedPullRequest()).toMatchObject({
       merge_commit_sha: 'jkl012'

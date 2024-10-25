@@ -24,7 +24,10 @@ export async function run(): Promise<void> {
       'assignees',
       pr.assignees?.map(assignee => assignee.login).join(',') || ''
     )
-    core.setOutput('assignees-json', JSON.stringify(pr.assignees || []))
+    core.setOutput(
+      'assignees-json',
+      JSON.stringify(pr.assignees?.map(assignee => assignee.login) || [])
+    )
     core.setOutput('labels', pr.labels.map(label => label.name).join(','))
     core.setOutput(
       'labels-json',
