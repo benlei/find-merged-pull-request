@@ -1,23 +1,48 @@
-name: 'The name of your action here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'Get Merged Pull Request'
+description: 'Gets details about the pull request that was merged'
+author: 'benlei'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
 branding:
-  icon: 'heart'
-  color: 'red'
+  icon: 'git-pull-request'
+  color: 'blue'
 
 # Define your inputs here.
 inputs:
-  milliseconds:
-    description: 'Your input description here'
-    required: true
-    default: '1000'
+  token:
+    description: The GitHub token used to create an authenticated client
+    default: ${{ github.token }}
+    required: false
+  page-limit:
+    description:
+      The max number of closed pull request pages to search through. The default
+      of 1 is usually enough. Set to 0 to search through, effectively, all
+      pages.
+    required: false
+    default: '1'
 
 # Define your outputs here.
 outputs:
-  time:
-    description: 'Your output description here'
+  title:
+    description: The title of the pull request
+  number:
+    description: The number of the pull request
+  body:
+    description: The body of the pull request
+  labels:
+    description: The labels of the pull request, separated by commas
+  labels-json:
+    description: The labels of the pull request as a JSON array
+  milestone:
+    description: The milestone of the pull request
+  user:
+    description: The user who opened the pull request
+  merged_by:
+    description: The user who merged the pull request
+  assignees:
+    description: The users who were assigned to the pull request
+  assignees-json:
+    description: The users who were assigned to the pull request as a JSON array
 
 runs:
   using: node20

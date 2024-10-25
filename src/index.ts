@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 /**
  * The entrypoint for the action.
  */
