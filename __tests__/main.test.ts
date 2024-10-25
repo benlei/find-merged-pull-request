@@ -18,7 +18,9 @@ const ExamplePr: PullRequest = {
 describe('run', () => {
   it('should set outputs when a PR is found', async () => {
     jest.spyOn(pr, 'findMergedPullRequest').mockResolvedValue(ExamplePr)
-    const setOutputSpy = jest.spyOn(core, 'setOutput')
+    const setOutputSpy = jest
+      .spyOn(core, 'setOutput')
+      .mockImplementation(() => {})
     await run()
     expect(setOutputSpy).toHaveBeenCalledWith('title', 'foo')
     expect(setOutputSpy).toHaveBeenCalledWith('number', '42')
@@ -36,8 +38,12 @@ describe('run', () => {
 
   it('should still return json outputs even if PR not found', async () => {
     jest.spyOn(pr, 'findMergedPullRequest').mockResolvedValue(null)
-    const setFailedSpy = jest.spyOn(core, 'setFailed')
-    const setOutputSpy = jest.spyOn(core, 'setOutput')
+    const setFailedSpy = jest
+      .spyOn(core, 'setFailed')
+      .mockImplementation(() => {})
+    const setOutputSpy = jest
+      .spyOn(core, 'setOutput')
+      .mockImplementation(() => {})
 
     await run()
     expect(setFailedSpy).not.toHaveBeenCalled()
@@ -49,7 +55,9 @@ describe('run', () => {
     jest
       .spyOn(pr, 'findMergedPullRequest')
       .mockRejectedValue(new Error('test error'))
-    const setFailedSpy = jest.spyOn(core, 'setFailed')
+    const setFailedSpy = jest
+      .spyOn(core, 'setFailed')
+      .mockImplementation(() => {})
     await run()
     expect(setFailedSpy).toHaveBeenCalledWith('test error')
   })
