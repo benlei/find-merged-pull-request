@@ -30,3 +30,15 @@ jobs:
       - name: PR should have been found
         if: ${{ steps.test-action.outputs.number == '' }}
         run: exit 1
+
+      - name: PR Author should be filled
+        if: ${{ steps.test-action.outputs.user == '' }}
+        run: exit 1
+
+      - name: PR Title should be filled
+        if: ${{ steps.test-action.outputs.title == '' }}
+        run: exit 1
+
+      - name: PR Merged By should be filled
+        if: ${{ steps.test-action.outputs.merged_by == '' }}
+        run: exit 1
