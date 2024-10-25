@@ -1,8 +1,8 @@
 {
   "name": "get-merged-pull-request",
   "description": "GitHub Actions TypeScript template",
-  "version": "0.0.0",
-  "author": "",
+  "version": "1.0.0",
+  "author": "benlei",
   "private": true,
   "homepage": "https://github.com/benlei/get-merged-pull-request",
   "repository": {
