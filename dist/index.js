@@ -31655,7 +31655,10 @@ exports.contextSha = exports.pageLimitInput = exports.githubTokenInput = void 0;
 /* istanbul ignore file */
 const core = __importStar(__nccwpck_require__(7484));
 const github_1 = __nccwpck_require__(3228);
-const githubTokenInput = () => core.getInput('github-token');
+const githubTokenInput = () => core.getInput('token', {
+    required: false,
+    trimWhitespace: true
+});
 exports.githubTokenInput = githubTokenInput;
 const pageLimitInput = () => core.getInput('page-limit', {
     required: false,
