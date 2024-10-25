@@ -28,7 +28,10 @@
         "editor.formatOnSave": true,
         "markdown.extension.list.indentationSize": "adaptive",
         "markdown.extension.italic.indicator": "_",
-        "markdown.extension.orderedList.marker": "one"
+        "markdown.extension.orderedList.marker": "one",
+        "github.copilot.enable": {
+          "markdown": true
+        }
       }
     }
   },

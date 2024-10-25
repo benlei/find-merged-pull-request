@@ -26,15 +26,23 @@ describe('run', () => {
     expect(setOutputSpy).toHaveBeenCalledWith('user', 'octocat')
     expect(setOutputSpy).toHaveBeenCalledWith('assignees', '')
     expect(setOutputSpy).toHaveBeenCalledWith('labels', 'bug,enhancement')
+    expect(setOutputSpy).toHaveBeenCalledWith(
+      'labels-json',
+      '["bug","enhancement"]'
+    )
     expect(setOutputSpy).toHaveBeenCalledWith('milestone', 'v1.0')
     expect(setOutputSpy).toHaveBeenCalledWith('merged_by', 'github')
   })
 
-  it('should set outputs when no PR is found', async () => {
+  it('should still return json outputs even if PR not found', async () => {
     jest.spyOn(pr, 'findMergedPullRequest').mockResolvedValue(null)
+    const setFailedSpy = jest.spyOn(core, 'setFailed')
     const setOutputSpy = jest.spyOn(core, 'setOutput')
+
     await run()
-    expect(setOutputSpy).not.toHaveBeenCalled()
+    expect(setFailedSpy).not.toHaveBeenCalled()
+    expect(setOutputSpy).toHaveBeenCalledWith('assignees-json', '[]')
+    expect(setOutputSpy).toHaveBeenCalledWith('labels-json', '[]')
   })
 
   it('should set the workflow as failed if an error occurs', async () => {

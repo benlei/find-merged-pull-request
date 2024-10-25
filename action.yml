@@ -31,6 +31,8 @@ outputs:
     description: The body of the pull request
   labels:
     description: The labels of the pull request, separated by commas
+  labels-json:
+    description: The labels of the pull request as a JSON array
   milestone:
     description: The milestone of the pull request
   user:
@@ -39,6 +41,8 @@ outputs:
     description: The user who merged the pull request
   assignees:
     description: The users who were assigned to the pull request
+  assignees-json:
+    description: The users who were assigned to the pull request as a JSON array
 
 runs:
   using: node20
