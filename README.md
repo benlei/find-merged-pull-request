@@ -1,9 +1,9 @@
-# benlei/get-merged-pull-request
+# benlei/find-merged-pull-request
 
-[![GitHub Super-Linter](https://github.com/benlei/get-merged-pull-request/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
-![CI](https://github.com/benlei/get-merged-pull-request/actions/workflows/ci.yml/badge.svg)
-[![Check dist/](https://github.com/benlei/get-merged-pull-request/actions/workflows/check-dist.yml/badge.svg)](https://github.com/benlei/get-merged-pull-request/actions/workflows/check-dist.yml)
-[![CodeQL](https://github.com/benlei/get-merged-pull-request/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/benlei/get-merged-pull-request/actions/workflows/codeql-analysis.yml)
+[![GitHub Super-Linter](https://github.com/benlei/find-merged-pull-request/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
+![CI](https://github.com/benlei/find-merged-pull-request/actions/workflows/ci.yml/badge.svg)
+[![Check dist/](https://github.com/benlei/find-merged-pull-request/actions/workflows/check-dist.yml/badge.svg)](https://github.com/benlei/find-merged-pull-request/actions/workflows/check-dist.yml)
+[![CodeQL](https://github.com/benlei/find-merged-pull-request/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/benlei/find-merged-pull-request/actions/workflows/codeql-analysis.yml)
 [![Coverage](./badges/coverage.svg)](./badges/coverage.svg)
 
 This action can be used to try to match the current commit of the running
@@ -46,7 +46,7 @@ use the `pull_request` event due to the limitations around the event.
 ```yaml
 - name: Get merged pull request
   id: merged
-  uses: benlei/get-merged-pull-request@v1
+  uses: benlei/find-merged-pull-request@v1
   with:
     token: ${{ secrets.GITHUB_TOKEN }}
 

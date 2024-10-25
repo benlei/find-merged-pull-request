@@ -1,5 +1,7 @@
-name: 'Get Merged Pull Request'
-description: 'Gets details about the pull request that was merged'
+name: 'Find Merged Pull Request'
+description:
+  'Finds and gets details about the pull request that was merged for current
+  commit'
 author: 'benlei'
 
 # Add your action's branding here. This will appear on the GitHub Marketplace.
