@@ -1,16 +1,16 @@
 {
-  "name": "get-merged-pull-request",
+  "name": "find-merged-pull-request",
   "description": "GitHub Actions TypeScript template",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "benlei",
   "private": true,
-  "homepage": "https://github.com/benlei/get-merged-pull-request",
+  "homepage": "https://github.com/benlei/find-merged-pull-request",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benlei/get-merged-pull-request.git"
+    "url": "git+https://github.com/benlei/find-merged-pull-request.git"
   },
   "bugs": {
-    "url": "https://github.com/benlei/get-merged-pull-request/issues"
+    "url": "https://github.com/benlei/find-merged-pull-request/issues"
   },
   "keywords": [
     "actions",
