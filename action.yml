@@ -47,5 +47,5 @@ outputs:
     description: The users who were assigned to the pull request as a JSON array
 
 runs:
-  using: node20
+  using: node24
   main: dist/index.js
